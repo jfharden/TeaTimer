@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jamescoggan.teatimer.R;
+import com.jamescoggan.teatimer.utils.TimeHelper;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class TeaTimerAdapter extends RecyclerView.Adapter<TeaTimerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final TeaTimerAdapter.ViewHolder holder, int position) {
-        holder.time.setText(String.valueOf(itemList.get(position)));
+        holder.time.setText(TimeHelper.timeInMillisToMinutesSeconds(itemList.get(position)));
     }
 
     @Override

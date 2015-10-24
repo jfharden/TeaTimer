@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.subscriptions.CompositeSubscription;
-import timber.log.Timber;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -61,7 +60,7 @@ public class HomeActivityFragment extends Fragment {
         mList.setLayoutManager(mLayoutManager);
         mList.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity().getBaseContext(), (view, position) -> {
-                    Timber.d("Clicked" + String.valueOf(position));
+                    ((HomeActivity) getActivity()).loadTimer(mAdapter.getItemTime(position));
                 })
         );
 
@@ -109,7 +108,7 @@ public class HomeActivityFragment extends Fragment {
         super.onStart();
         subscriptions = new CompositeSubscription();
         subscriptions.add(
-                DataLayer.toObserverable().subscribe(this::addTime));
+                DataLayer.timePickerToObserverable().subscribe(this::addTime));
     }
 
     @Override

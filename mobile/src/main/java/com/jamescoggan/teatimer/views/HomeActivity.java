@@ -8,16 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
 
 import com.jamescoggan.teatimer.R;
-import com.jamescoggan.teatimer.views.HomeActivityFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 public class HomeActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     @Bind(R.id.container)
     FrameLayout container;
+
+    private long currentTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,4 +43,13 @@ public class HomeActivity extends AppCompatActivity {
                 .commitAllowingStateLoss();
     }
 
+    public void loadTimer(long time) {
+        Timber.d("Loading timer with " + String.valueOf(time));
+        currentTime = time;
+        loadFragment(new TimerFragment());
+    }
+
+    public long getTime() {
+        return currentTime;
+    }
 }

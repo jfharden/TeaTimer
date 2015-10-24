@@ -4,4 +4,8 @@
     <string name="picker_title"><![CDATA[Please select the time in minutes and seconds]]></string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="item_border">Item Border</string>
+    <string name="timer_text">00:00</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="timer_finished">Timer finished!</string>
 </resources>

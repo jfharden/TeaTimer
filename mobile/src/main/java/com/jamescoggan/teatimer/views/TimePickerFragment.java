@@ -40,8 +40,8 @@ public class TimePickerFragment extends DialogFragment
 
     public void onTimeSet(TimePicker view, int minutes, int seconds) {
         long time = minutes * 60000 + seconds * 1000;
-        if (DataLayer.hasObservers()) {
-            DataLayer.send(time);
+        if (DataLayer.timePickerHasObservers()) {
+            DataLayer.sendTimePicker(time);
         }
     }
 }

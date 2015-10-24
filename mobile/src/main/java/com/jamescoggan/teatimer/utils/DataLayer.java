@@ -20,17 +20,32 @@ import rx.subjects.PublishSubject;
 
 public class DataLayer {
 
-    private final static PublishSubject<Long> publisher = PublishSubject.create();
+    private final static PublishSubject<Long> timePickerPublisher = PublishSubject.create();
 
-    public static void send(Long o) {
-        publisher.onNext(o);
+    public static void sendTimePicker(Long o) {
+        timePickerPublisher.onNext(o);
     }
 
-    public static Observable<Long> toObserverable() {
-        return publisher;
+    public static Observable<Long> timePickerToObserverable() {
+        return timePickerPublisher;
     }
 
-    public static boolean hasObservers() {
-        return publisher.hasObservers();
+    public static boolean timePickerHasObservers() {
+        return timePickerPublisher.hasObservers();
+    }
+
+
+    private final static PublishSubject<Long> timerPublisher = PublishSubject.create();
+
+    public static void sendTimer(Long o) {
+        timerPublisher.onNext(o);
+    }
+
+    public static Observable<Long> timerToObserverable() {
+        return timerPublisher;
+    }
+
+    public static boolean timerObservers() {
+        return timerPublisher.hasObservers();
     }
 }
