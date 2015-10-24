@@ -34,6 +34,7 @@ public class timerService extends Service {
 
     private Handler mHandler;
     private long currentTime = 0;
+    private boolean running = false;
 
     @Nullable
     @Override
@@ -45,23 +46,32 @@ public class timerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             String intentAction = intent.getAction();
-            Timber.d("Received timer event: " + intentAction);
-            currentTime = Long.parseLong(intentAction);
-            mHandler = new Handler();
-            mHandler.postDelayed(mRunnable, 1000L);
+            if (intentAction.equals("stop")) {
+                running = false;
+                this.stopSelf();
+            } else {
+                running = true;
+                Timber.d("Received timer event: " + intentAction);
+                currentTime = Long.parseLong(intentAction);
+                mHandler = new Handler();
+                mHandler.postDelayed(mRunnable, 1000L);
+            }
         }
         return START_STICKY;
     }
 
+
     private final Runnable mRunnable = () -> {
         currentTime = currentTime - 1000;
         Timber.d("Count down: " + String.valueOf(currentTime));
-        DataLayer.sendTimer(currentTime);
-        if (currentTime > 0) {
+        if (currentTime > 0 && running) {
+            DataLayer.sendTimer(currentTime);
             mHandler.postDelayed(this.mRunnable, 1000L);
             notifyUser(TimeHelper.timeInMillisToMinutesSeconds(currentTime), false);
         } else {
+            DataLayer.sendTimer(0l);
             notifyUser(getString(R.string.timer_finished), true);
+            running = false;
             this.stopSelf();
         }
     };
