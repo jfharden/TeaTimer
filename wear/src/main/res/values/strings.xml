@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">Tea Timer</string>
-    <string name="hello_world">Hello World!</string>
+    <string name="app_name"><![CDATA[Egg & Tea Timer]]></string>
+    <string name="timer_default">00:00</string>
+    <string name="timerFinished">Timer finished</string>
 </resources>

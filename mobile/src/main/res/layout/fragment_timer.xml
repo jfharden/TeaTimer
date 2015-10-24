@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/timer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/time_margin"
+        android:text="@string/timer_text"
+        android:textSize="@dimen/time_text_size" />
+
+    <Button
+        android:id="@+id/timer_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timer_text"
+        android:text="@string/button_start" />
+
+    <Button
+        android:id="@+id/timer_send_to_watch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timer_button"
+        android:text="@string/send_to_watch" />
+
+</RelativeLayout>
