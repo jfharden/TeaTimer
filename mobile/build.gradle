@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
+plugins {
+    id "me.tatarka.retrolambda" version "3.2.3"
+}
+
 apply plugin: 'com.android.application'
 
 android {
@@ -6,7 +20,7 @@ android {
 
     defaultConfig {
         applicationId "com.jamescoggan.teatimer"
-        minSdkVersion 9
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -17,6 +31,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -26,4 +44,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.android.support:design:23.1.0'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton.timber:timber:4.1.0'
 }

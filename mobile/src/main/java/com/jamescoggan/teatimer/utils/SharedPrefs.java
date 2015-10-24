@@ -18,46 +18,49 @@ package com.jamescoggan.teatimer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import timber.log.Timber;
 
 public class SharedPrefs {
     private static final String APP_PREFERENCES = "TeaPrefs";
     private static final String SAVED_TIMES = "saved-times";
 
     public static void addTimer(Context context, long time) {
+        Timber.d("Saving time to prefs:" + String.valueOf(time));
         ArrayList<Long> timers = getTimers(context);
         timers.add(time);
         saveTimers(context, timers);
     }
 
     public static void removeTimer(Context context, long time) {
+        Timber.d("Removing time to prefs:" + String.valueOf(time));
         ArrayList<Long> timers = getTimers(context);
         timers.remove(time);
         saveTimers(context, timers);
     }
 
-    @SuppressWarnings("unchecked")
     public static ArrayList<Long> getTimers(Context context) {
         ArrayList<Long> timers = new ArrayList<>();
-        try {
-            String defaultData = ObjectSerializer.serialize(timers);
-            String savedData = getPrefs(context).getString(SAVED_TIMES, defaultData);
-            Object deserializedData = ObjectSerializer.deserialize(savedData);
-            timers = (ArrayList<Long>) deserializedData;
-        } catch (IOException e) {
-            e.printStackTrace();
+        Set<String> saved = getPrefs(context).getStringSet(SAVED_TIMES, new HashSet<>());
+
+        for (String aSaved : saved) {
+            timers.add(Long.valueOf(aSaved));
         }
+        Timber.d("Got " + String.valueOf(timers.size()) + " Timers");
         return timers;
     }
 
     private static void saveTimers(Context context, ArrayList<Long> timers) {
-        SharedPreferences.Editor editor = getEditor(context);
-        try {
-            editor.putString(SAVED_TIMES, ObjectSerializer.serialize(timers));
-        } catch (IOException e) {
-            e.printStackTrace();
+        Set<String> data = new HashSet<>();
+        for (Long time : timers) {
+            data.add(String.valueOf(time));
         }
+
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putStringSet(SAVED_TIMES, data);
         editor.commit();
     }
 
