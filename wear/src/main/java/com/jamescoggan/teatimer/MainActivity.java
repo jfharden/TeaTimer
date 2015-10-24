@@ -1,23 +1,45 @@
+/**
+ * Created by James Coggan on 24/10/2015.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.jamescoggan.teatimer;
 
+import android.app.NotificationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.jamescoggan.teatimer.utils.WearSharedPrefs;
+import com.jamescoggan.teatimer.utils.WearTimeHelper;
 
 public class MainActivity extends WearableActivity {
 
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
+    private final String TAG = MainActivity.class.getSimpleName();
 
     private BoxInsetLayout mContainerView;
-    private TextView mTextView;
-    private TextView mClockView;
+    private Button mClockView;
+
+    private Handler mHandler;
+    private long currentTime = 0;
+    private boolean running = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +47,65 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.text);
-        mClockView = (TextView) findViewById(R.id.clock);
+        currentTime = WearSharedPrefs.getTime(getApplicationContext());
+        setClock();
+        mClockView = (Button) findViewById(R.id.clock);
+        mClockView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTimer();
+            }
+        });
+    }
+
+    private void setClock() {
+        if (mClockView != null) {
+            mClockView.setText(WearTimeHelper.timeInMillisToMinutesSeconds(currentTime));
+        }
+    }
+
+    private void startTimer() {
+        if (!isAmbient()) {
+            if (running) {
+                running = false;
+            } else {
+                running = true;
+                currentTime = WearSharedPrefs.getTime(getApplicationContext());
+                mHandler = new Handler();
+                mHandler.postDelayed(mRunnable, 1000L);
+            }
+        }
+    }
+
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            currentTime = currentTime - 1000;
+            Log.d(TAG, "Count down: " + String.valueOf(currentTime));
+            if (currentTime > 0 && running) {
+                setClock();
+                mHandler.postDelayed(mRunnable, 1000L);
+            } else {
+                running = false;
+                notifyUser(getString(R.string.timerFinished));
+                currentTime = WearSharedPrefs.getTime(getApplicationContext());
+                setClock();
+            }
+        }
+    };
+
+    private void notifyUser(String text) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText(text);
+        int mNotificationId = 002;
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(new long[]{0, 200, 500, 200, 500, 200, 500, 200, 500, 200}, -1);
     }
 
     @Override
@@ -50,15 +128,11 @@ public class MainActivity extends WearableActivity {
 
     private void updateDisplay() {
         if (isAmbient()) {
-            mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
-            mTextView.setTextColor(getResources().getColor(android.R.color.white));
-            mClockView.setVisibility(View.VISIBLE);
-
-            mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
+            mClockView.setBackgroundColor(getResources().getColor(android.R.color.black));
+            mClockView.setTextColor(getResources().getColor(android.R.color.white));
         } else {
-            mContainerView.setBackground(null);
-            mTextView.setTextColor(getResources().getColor(android.R.color.black));
-            mClockView.setVisibility(View.GONE);
+            mClockView.setBackgroundColor(getResources().getColor(android.R.color.white));
+            mClockView.setTextColor(getResources().getColor(android.R.color.black));
         }
     }
 }

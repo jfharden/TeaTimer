@@ -72,7 +72,8 @@ public class timerService extends Service {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
-        if (vibrate) mBuilder.setVibrate(new long[]{0, 200, 1000, 200});
+        if (vibrate)
+            mBuilder.setVibrate(new long[]{0, 200, 500, 200, 500, 200, 500, 200, 500, 200});
         int mNotificationId = 001;
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
