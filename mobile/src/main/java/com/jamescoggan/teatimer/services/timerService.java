@@ -79,7 +79,7 @@ public class timerService extends Service {
     private void notifyUser(String text, boolean vibrate) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
         if (vibrate)

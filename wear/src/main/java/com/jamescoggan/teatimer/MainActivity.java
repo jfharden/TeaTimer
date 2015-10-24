@@ -97,7 +97,7 @@ public class MainActivity extends WearableActivity {
     private void notifyUser(String text) {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText(text);
         int mNotificationId = 002;
