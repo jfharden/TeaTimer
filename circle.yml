@@ -1,0 +1,23 @@
+#
+# Build configuration for Circle CI
+#
+
+general:
+    artifacts:
+        - /home/ubuntu/teatimer/app/build/outputs/apk/
+
+machine:
+    environment:
+        ANDROID_HOME: /usr/local/android-sdk-linux
+    java:
+        version: oraclejdk8
+
+dependencies:
+    override:
+        - echo y | android update sdk --no-ui --all --filter android-23,platform-tools,build-tools-23.0.1,addon-google_apis-google-23,extra-android-support,extra-android-m2repository,extra-google-google_play_services,extra-google-m2repository
+        - ANDROID_HOME=/usr/local/android-sdk-linux ./gradlew dependencies
+
+test:
+    override:
+        - (./gradlew assemble):
+            timeout: 360
